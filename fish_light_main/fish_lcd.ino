@@ -36,32 +36,38 @@ int dbgLcd = 0;                 // Flag to debug the LCD screen functions
 // Move Cursor Right
 void moveCursorRight() {
   lcd_cursor_loc[0]++;
-  if (lcd_cursor_loc[0] >= 16)  // If cursor gets moved off screen, wrap to 0
-    lcd_cursor_loc[0] = 0;
+  if (lcd_cursor_loc[0] > LCD_RIGHT_EDGE)  // If cursor gets moved off screen, wrap to 0
+    lcd_cursor_loc[0] = LCD_LEFT_EDGE;
+
   lcd.setCursor(lcd_cursor_loc[0],lcd_cursor_loc[1]);
 }
 
 // Move Cursor Left
 void moveCursorLeft() {
-  lcd_cursor_loc[0]--;
-  if (lcd_cursor_loc[0] < 0)  // If cursor gets moved off screen, wrap to 15
-    lcd_cursor_loc[0] = 15;
+  if (lcd_cursor_loc[0] == LCD_LEFT_EDGE)
+    lcd_cursor_loc[0] = LCD_RIGHT_EDGE;
+  else
+    lcd_cursor_loc[0]--;
+
   lcd.setCursor(lcd_cursor_loc[0],lcd_cursor_loc[1]);
 }
 
 // Move Cursor Up
 void moveCursorUp() {
   lcd_cursor_loc[1]++;
-  if (lcd_cursor_loc[1] >= 2)  // If cursor gets moved off screen, wrap to 0
-    lcd_cursor_loc[1] = 0;
+  if (lcd_cursor_loc[1] > LCD_TOP_EDGE)  // If cursor gets moved off screen, wrap to 0
+    lcd_cursor_loc[1] = LCD_BTM_EDGE;
+    
   lcd.setCursor(lcd_cursor_loc[0],lcd_cursor_loc[1]);
 }
 
 // Move Cursor Down
 void moveCursorDown() {
-  lcd_cursor_loc[1]--;
-  if (lcd_cursor_loc[1] < 0)  // If cursor gets moved off screen, wrap to 1
-    lcd_cursor_loc[1] = 1;
+  if (lcd_cursor_loc[1] == LCD_BTM_EDGE)
+    lcd_cursor_loc[1] = LCD_TOP_EDGE;
+  else
+    lcd_cursor_loc[1]--;
+    
   lcd.setCursor(lcd_cursor_loc[0],lcd_cursor_loc[1]);
 }
 
@@ -140,10 +146,10 @@ void MainScreenLCD(int mins, int CWp, int WWp, int BLp) {
   
   // Print the Header
   lcd.setCursor(0,0);
-  lcd.print("Time: CW WW BL");
+  lcd.print("<Time: CW WW BL>");
   
   // Print the Time
-  lcd.setCursor(0,1);  // Hours
+  lcd.setCursor(1,1);  // Hours
   if (mins/60 < 10)
     lcd.print("0");
   lcd.print(mins/60);
@@ -153,19 +159,19 @@ void MainScreenLCD(int mins, int CWp, int WWp, int BLp) {
   lcd.print(mins%60);
   
   // Print the Cool White LED Power Percentage
-  lcd.setCursor(6,1);
+  lcd.setCursor(7,1);
   if (CWp < 10)
     lcd.print("0");
   lcd.print(CWp); 
   
   // Print the Warm White LED Power Percentage
-  lcd.setCursor(9,1);
+  lcd.setCursor(10,1);
   if (WWp < 10)
     lcd.print("0");
   lcd.print(WWp);
   
   // Print the Blue LED Power Percentage
-  lcd.setCursor(12,1);
+  lcd.setCursor(13,1);
   if (BLp < 10)
     lcd.print("0");
   lcd.print(BLp);
