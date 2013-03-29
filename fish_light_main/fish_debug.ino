@@ -34,7 +34,6 @@ double get_serial_number() {
   for (int i = 0; i < num_digs; i++) {
     serial_number = serial_number + dly[i] * pow(10, i);
   }
-  Serial.println("Getting some serial numbers");
   return serial_number;
 }
 
@@ -65,7 +64,7 @@ void debug_help() {
   Serial.println("n | N - None: Debug none.");*/
 }
 
-void debug_time() {  
+/*void debug_time() {  
   if (dbgTime) {  // If already debugging, turn it off
     Serial.println("Disabling time debug.");
     dbgTime = 0;
@@ -153,17 +152,17 @@ void debug_which() {
     Serial.println("Serial debug enabled.");
   if (! (dbgBright || dbgLcd || dbgButtons || dbgTime || dbgSerial))
     Serial.println("No debugging enabled.");
-}
+}*/
 
 void get_serial_command() {
   idle_flag = 0;  // reset idle flag since we got a command
   command = Serial.read();
   byte addr = 0;  // RTC address
   byte data = 0;  // RTC data
-  if (dbgTime || dbgBright || dbgLcd || dbgButtons || dbgSerial) {  // only show what command we got if in debug mode
+  //if (dbgTime || dbgBright || dbgLcd || dbgButtons || dbgSerial) {  // only show what command we got if in debug mode
     Serial.print("Got Command:");
     Serial.println(command);
-  }
+  //}
   if (command == 84 || command == 116) {    // command == 'T' | 't': set date
     setTimeSerial();
     Serial.print("Time is set to : ");
@@ -234,9 +233,10 @@ void get_serial_command() {
     }
     else 
       Serial.println("Unknown debug command!");
-  }
+  }*/
   else {
     Serial.println("Unknown serial command!");
   }
+  command = 0;  // Reset the Serial command holder
 }
 

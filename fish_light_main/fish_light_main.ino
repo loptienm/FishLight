@@ -15,7 +15,7 @@ const int WWledPin  = 9;         // Warm White LED connected to digital pin 11
 const int PotPin    = A0;        // Silver Potentiometer is on pin A0
 const int LCDBackLightPin = 6;   // PWM for LCD backlight
 const int buttonPin = A1;        // The pushbutton array is on pin A1
-//const int clkPin = 12;           // RTC square wave pin
+const int clkPin = 12;           // RTC square wave pin
 
 // LCD pins
 // LiquidCrystal lcd(8, 7, 5, 4, 3, 2);

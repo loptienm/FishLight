@@ -8,10 +8,22 @@ void loop() {
   if (Serial.available()) {
     get_serial_command();
   }
+  /*lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("After check:");
+  lcd.setCursor(0,1);
+  lcd.print("serial");
+  delay(1000);*/
   //Serial.println("After check serial.");
   
   // Sample Buttons
   getButtonFunction();
+  /*lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("After check:");
+  lcd.setCursor(0,1);
+  lcd.print("buttons");
+  delay(1000);*/
   //Serial.println("After check buttons.");
   
   // Read the Clk pin from RTC
@@ -31,11 +43,24 @@ void loop() {
   else {            // Use the actual time
     readDateDS1307();
   }
+  /*lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("After check:");
+  lcd.setCursor(0,1);
+  lcd.print("time");
+  delay(1000);*/
   //Serial.println("After check time.");
 
   // Dont do stuff if we are setting the time with buttons
   if (!setting_value){
     // Get the brightness as defined by the silver potentiometer
+    getmaxbrightness();
+    /*lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("After check:");
+    lcd.setCursor(0,1);
+    lcd.print("max brightness");
+    delay(1000);*/
     getmaxbrightness();
     //Serial.println("After getting max brightness.");
   
@@ -43,17 +68,35 @@ void loop() {
     BLBright = blledsched(newtime);
     CWBright = cwledsched(newtime);
     WWBright = wwledsched(newtime);
+    /*lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("After check:");
+    lcd.setCursor(0,1);
+    lcd.print("schedules");
+    delay(1000);*/
     //Serial.println("After check schedules.");
-  
+
     analogWrite(WWledPin, WWBright);
     analogWrite(CWledPin, CWBright);
     analogWrite(BLledPin, BLBright);
+    /*lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("After check:");
+    lcd.setCursor(0,1);
+    lcd.print("set bright");
+    delay(1000);*/
     //Serial.println("After set bright.");
 
     // Redraw LCD only if we need to
     if (newtime == targetnewtime || idle_flag == 0) {
       MainScreenLCD(newtime, CWBright*100.0/255.0, WWBright*100.0/255.0, BLBright*100.0/255.0);
     }
+    /*lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("After check:");
+    lcd.setCursor(0,1);
+    lcd.print("write screen");
+    delay(1000);*/
     //Serial.println("After write screen.");
   
     // Set the target time to be the next minute
@@ -61,16 +104,17 @@ void loop() {
     // This must be after the redraw so that the if condition above is true each minute
     targetnewtime = newtime + 1;
   
-    //Serial.print("Cursor at position ");
-    //Serial.println(lcd_cursor_loc[0]);
-  
     // Get the status of idle_flag and dim_count
     // So that we can set the brightness of the LCD Back Light
     getLCDblStatus();
+    /*lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("After check:");
+    lcd.setCursor(0,1);
+    lcd.print("backlight");*/
     //Serial.println("After check backlight.");
   
-    //  delay (10);
-    command = 0;  // Reset the Serial command holder
+    //delay (2000);
   }
 }
 

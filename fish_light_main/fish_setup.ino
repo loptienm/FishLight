@@ -3,7 +3,6 @@
 
 void setup()  {
   Wire.begin();
-  Serial.begin(115200);
   lcd.begin(16, 2);
   lcd.cursor();
   lcd_cursor_loc[0] = 0;  // Init the cursor location
@@ -18,16 +17,22 @@ void setup()  {
     total = total + readings[thisReading];
   }
   average = total / numReadings;
-  
+
   byte rtc_data = 0;
-  RtcWrite(0x07, 0xFF);  // Start the RTC square wave generator for 1Hz
-  rtc_data = RtcRead(0x07);
-  Serial.print("RTC data returned: 0x");
-  Serial.println(rtc_data, HEX);
+  //RtcWrite(0x07, 0xFF);  // Start the RTC square wave generator for 1Hz
+  //rtc_data = RtcRead(0x07);
+  //Serial.print("RTC data returned: 0x");
+  //Serial.println(rtc_data, HEX);
   
   // Initialize the time variables
   readDateDS1307();
+  Serial.begin(115200);
   printCurrentTime();  
   targetnewtime = newtime;
+  lcd.print("Board Init");
+  lcd.setCursor(0,1);
+  lcd.print("Starting...");
+  lcd.setCursor(lcd_cursor_loc[0],lcd_cursor_loc[1]);
   Serial.println("Board Initialized, ready for commands.");
+  delay(2000);
 }
