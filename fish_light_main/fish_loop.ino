@@ -13,7 +13,7 @@ void loop() {
   getButtonFunction();
   
   // Sample CLK
-  getClkStatus();
+  //getClkStatus();
   
   // Get the time from RTC
   if (dbgBright) {  // Use debug time instead of actual time

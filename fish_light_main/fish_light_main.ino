@@ -15,7 +15,7 @@ const int WWledPin  = 9;         // Warm White LED connected to digital pin 11
 const int PotPin    = A0;        // Silver Potentiometer is on pin A0
 const int LCDBackLightPin = 6;   // PWM for LCD backlight
 const int buttonPin = A1;        // The pushbutton array is on pin A1
-const int clkPin    = 8;         // Pin tied to RTC clk
+//const int clkPin    = 8;         // Pin tied to RTC clk
 
 // LCD pins
 // LiquidCrystal lcd(8, 7, 5, 4, 3, 2);
@@ -65,12 +65,12 @@ int targetnewtime = 0;       // Previous value of my calculated time to tell if 
 int second_count = 0;        // Counter for number of seconds since some resetting event (like idle_flag = 0)
 int prev_second = 0;         // Placeholder for the previous 'second' value
 int dbgTime = 0;             // Flag to debug the time functions
-int curr_clk = 0;            // Current clk status
+/*int curr_clk = 0;            // Current clk status
 int prev_clk = 0;            // Previous clk status
 int clk_rise = 0;            // Clk rising edge indicator
 int clk_high = 0;            // Clk high indicator
 int clk_fall = 0;            // Clk falling edge indicator
-int clk_low = 0;             // Clk low indicator
+int clk_low = 0;             // Clk low indicator*/
 //////////////////////////
 
 

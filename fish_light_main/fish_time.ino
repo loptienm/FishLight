@@ -1,4 +1,4 @@
-// This file holds the fucntions to calculate the time, program the RTC time,
+// This file holds the functions to calculate the time, program the RTC time,
 // and read the RTC to keep accurate time.
 
 ///////////////////////////////
@@ -305,7 +305,7 @@ void printCurrentTime() {
   Serial.println(year, DEC);
 }
 
-void getClkStatus() {
+/*void getClkStatus() {
   curr_clk = digitalRead(clkPin);
   Serial.print("CLK pin = ");
   Serial.println(curr_clk);
@@ -339,4 +339,4 @@ void getClkStatus() {
     Serial.println(clkPin);
   }
   prev_clk = curr_clk;
-}
+}*/
