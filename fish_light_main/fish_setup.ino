@@ -19,6 +19,12 @@ void setup()  {
   }
   average = total / numReadings;
   
+  byte rtc_data = 0;
+  RtcWrite(0x07, 0xFF);  // Start the RTC square wave generator for 1Hz
+  rtc_data = RtcRead(0x07);
+  Serial.print("RTC data returned: 0x");
+  Serial.println(rtc_data, HEX);
+  
   // Initialize the time variables
   readDateDS1307();
   printCurrentTime();  
