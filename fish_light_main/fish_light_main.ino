@@ -15,7 +15,7 @@ const int WWledPin  = 9;         // Warm White LED connected to digital pin 11
 const int PotPin    = A0;        // Silver Potentiometer is on pin A0
 const int LCDBackLightPin = 6;   // PWM for LCD backlight
 const int buttonPin = A1;        // The pushbutton array is on pin A1
-//const int clkPin    = 8;         // Pin tied to RTC clk
+//const int clkPin = 12;           // RTC square wave pin
 
 // LCD pins
 // LiquidCrystal lcd(8, 7, 5, 4, 3, 2);
@@ -47,16 +47,15 @@ int debounce_cnt = 0;            // Counter to count from a button value change 
 int debounce_delay = 35;         // Value to count up to once a button has been pressed.  If the button value is the same, its a true button press
 int debounce_en = 0;             // Enable the button debouncing counter
 int setting_value = 0;           // Flag to tell buttons to either move cursor or set a number value
-int dbgButtons = 0;              // Flag to debug button functions
 //////////////////////////
 
 
 //////////////////////////
-// Global vars for Time
-int clockAddress = 0x68;     // This is the I2C address
+// Global vars for Time / RTC
+int clockAddress = 0x68;     // This is the RTCs I2C address
 int command = 0;             // This is the command char, in ascii form, sent from the serial port     
 long previousMillis = 0;     // Will store last time Temp was updated
-byte second, minute, hour, dayOfWeek, dayOfMonth, month, year;
+byte second, minute, hour, dayOfWeek, dayOfMonth, month, year, control;
 const int totalDigs = 12;    // Number of digits needed to hold time
 int mytime[totalDigs];       // My time holder ([12:11] month, [10:9] dayofMonth, [8:7] year, [6] dayOfWeek,
                              //                 [5:4] hour, [3:2] minute, [1:0] second)
@@ -64,13 +63,12 @@ int newtime = 0;             // My calculated time to pass to LED schedule tasks
 int targetnewtime = 0;       // Previous value of my calculated time to tell if we need to redraw lcd
 int second_count = 0;        // Counter for number of seconds since some resetting event (like idle_flag = 0)
 int prev_second = 0;         // Placeholder for the previous 'second' value
-int dbgTime = 0;             // Flag to debug the time functions
-/*int curr_clk = 0;            // Current clk status
-int prev_clk = 0;            // Previous clk status
-int clk_rise = 0;            // Clk rising edge indicator
-int clk_high = 0;            // Clk high indicator
-int clk_fall = 0;            // Clk falling edge indicator
-int clk_low = 0;             // Clk low indicator*/
+byte curr_clk = 0;           // Current Clk status
+byte prev_clk = 0;           // Previous Clk status
+byte clk_rise = 0;           // Clk rising edge indicator
+byte clk_high = 0;           // Clk high indicator
+byte clk_fall = 0;           // Clk falling edge indicator
+byte clk_low  = 0;           // Clk low indicator
 //////////////////////////
 
 
@@ -86,9 +84,6 @@ int MaxBrightPWM = 255;      // Define the max brightness allowed in PWM terms
 int BLBright = 0;            // The current brightness of the Blue LEDs
 int CWBright = 0;            // The current brightness of the Cool White LEDs
 int WWBright = 0;            // The current brightness of the Warm White LEDs
-int dbgBright = 0;           // Flag to debug the brightness functions for the LEDs
-int dbgDelay = 0;            // Number of loop() cycles to count to between time steps
-int dbg_cnt = 0;             // Counter for keeping track of cycles betwen time steps (~300 for a second)
 //////////////////////////
 
 
@@ -114,9 +109,19 @@ int lcd_off_time  = 15;         // 15 seconds till the lcd turns off its backlig
 int idle_flag     = 0;          // Flag for determining if system is idle
 int dim_count     = 0;          // Counter to delay between dimming the lcd each leveldim_count
 int lcd_cursor_loc[2];          // Current location of the LCD cursor ([0] = horizontal dimension, [1] = vertical dimension)
-int dbgLcd = 0;                 // Flag to debug the LCD screen functions
 //////////////////////////
 
+//////////////////////////
+// Global Vars for Serial/Debug
+int dbgButtons = 0;              // Flag to debug button functions
+int dbgTime = 0;                 // Flag to debug the time functions
+int dbgBright = 0;               // Flag to debug the brightness functions for the LEDs
+double dbgDelay = 0;             // Number of loop() cycles to count to between time steps
+int dbg_cnt = 0;                 // Counter for keeping track of cycles betwen time steps (~300 for a second)
+int dbgLcd = 0;                  // Flag to debug the LCD screen functions
+int dbgSerial = 0;               // Flag to debug the Serial functions
+const int num_digs = 10;         // Number of digits allowed when getting a serial number
+//////////////////////////
 
 //////////////////////////
 // Macro Definitions
@@ -126,6 +131,12 @@ int dbgLcd = 0;                 // Flag to debug the LCD screen functions
 #define KEY_UP    3  // Up button pressed
 #define KEY_DOWN  4  // Down button pressed
 #define KEY_CENT  5  // Center button pressed
+
+#define LCD_RIGHT_EDGE 15  // Character number of the lcd screens right edge
+#define LCD_LEFT_EDGE  0   // Character number of the lcd screens left edge
+#define LCD_TOP_EDGE   1   // Character number of the lcd screens top edge
+#define LCD_BTM_EDGE   0   // Character number of the lcd screens bottom edge
+
 //////////////////////////
 
 
