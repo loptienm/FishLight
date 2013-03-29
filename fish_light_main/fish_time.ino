@@ -1,4 +1,4 @@
-// This file holds the functions to calculate the time, program the RTC time,
+// This file holds the fucntions to calculate the time, program the RTC time,
 // and read the RTC to keep accurate time.
 
 ///////////////////////////////
@@ -14,6 +14,119 @@ byte decToBcd(byte val) {
 // Convert binary coded decimal to normal decimal numbers
 byte bcdToDec(byte val) {
   return ( (val/16*10) + (val%16) );
+}
+
+/*void RtcInit() {
+  int myerr = 0;
+  Wire.beginTransmission(clockAddress);
+  Wire.write(byte(0x00));  // send the address to write
+  Wire.write(decToBcd(0x00 & 0x7F));  // send the data to write
+  myerr = Wire.endTransmission(1);
+  
+  Serial.print("Ended transmission with error ");
+  switch (myerr) {
+    case 0: Serial.println("0: Success"); break;
+    case 1: Serial.println("1: Data too long to fit in transmit buffer"); break;
+    case 2: Serial.println("2: Received NACK on transmit of address"); break;
+    case 3: Serial.println("3: Received NACK on transmit of data"); break;
+    case 4: Serial.println("4: Other error"); break;
+  }
+}*/
+
+// Write a value <data>(0 - 255) to an address <addr>(0-255)
+void RtcWrite(int addr, int data) {
+  int myerr = 0;
+  Wire.beginTransmission(clockAddress);
+  Wire.write(addr);  // send the address to write
+  if (addr <= 0x06){  // if writing to a time register, they are in BCD
+    Wire.write(decToBcd(data));  // send the data to write
+  } else {
+    Wire.write(data);
+  }
+  myerr = Wire.endTransmission(1);
+  
+  /*Serial.print("Wrote value ");
+  Serial.print(data);
+  Serial.print(" ,which is ");
+  Serial.print(decToBcd(data), BIN);
+  Serial.print(" in BCD, to address ");
+  Serial.println(addr);*/
+  
+  Serial.print("Ended transmission with error ");
+  switch (myerr) {
+    case 0: Serial.println("0: Success"); break;
+    case 1: Serial.println("1: Data too long to fit in transmit buffer"); break;
+    case 2: Serial.println("2: Received NACK on transmit of address"); break;
+    case 3: Serial.println("3: Received NACK on transmit of data"); break;
+    case 4: Serial.println("4: Other error"); break;
+  }
+}
+
+// Read <num_reads> bytes starting at address <addr> in RTC memory
+// Only 1 read is supported right now
+byte RtcRead(byte addr/*, int num_reads*/) {
+  byte data/*[num_reads]*/;
+  int num_reads = 1;  // Should be fixed and this commented out
+  
+  Wire.beginTransmission(clockAddress);
+  Wire.write(addr);
+  Wire.endTransmission();
+
+  Wire.requestFrom(clockAddress, num_reads);
+
+  // Read data
+  for (int i = 0; i < num_reads; i++) {
+    data/*[i]*/ = 0;  // Initialize the data element
+    if (addr <= 0x06){  // if writing to a time register, they are in BCD
+      data/*[i]*/ = bcdToDec(Wire.read());
+    } else {
+      data/*[i]*/ = Wire.read();
+    }
+  }
+  /*Serial.print("Read value ");
+  Serial.print(data);
+  Serial.print(" which is ");
+  Serial.print(decToBcd(data), BIN);
+  Serial.println(" in BCD");
+  return data;*/
+}
+
+// Check the RTCs square wave generator pin
+void getClkStatus() {
+  curr_clk = digitalRead(clkPin);
+//  Serial.print("CLK = ");
+//  Serial.print(curr_clk);
+//  Serial.print(" ");
+  
+  if (curr_clk == 1 && prev_clk == 0) {
+    clk_rise = 1;
+    clk_high = 1;
+    clk_fall = 0;
+    clk_low  = 0;
+//    Serial.println("Clk RISE");
+  } else if (curr_clk == 1 && prev_clk == 1) {
+    clk_rise = 0;
+    clk_high = 1;
+    clk_fall = 0;
+    clk_low  = 0;
+//    Serial.println("Clk HIGH");
+  } else if (curr_clk == 0 && prev_clk == 1) {
+    clk_rise = 0;
+    clk_high = 0;
+    clk_fall = 1;
+    clk_low  = 1;
+//    Serial.println("Clk FALL");
+  } else if (curr_clk == 0 && prev_clk == 0) {
+    clk_rise = 0;
+    clk_high = 0;
+    clk_fall = 0;
+    clk_low  = 1;
+//    Serial.println("Clk LOW");
+  } else {
+    Serial.print("Can't read Clk pin ");
+    Serial.println(clkPin);
+  }
+  prev_clk = curr_clk;
 }
 
 void changeTimeDig(int location, int up_downb) {
@@ -234,24 +347,33 @@ void writeDateDS1307() {
   int myerr = 0;
   
   Wire.beginTransmission(clockAddress);
-  Wire.write(byte(0x00));  // 0 to bit 7 starts the clock
-  Wire.write(decToBcd(second));
+  Wire.write(byte(0x00));  // Set the address to 0x00
+  Wire.write(decToBcd(second) & 0x7F);  // 0 to bit 7 starts the clock
   Wire.write(decToBcd(minute));
   Wire.write(decToBcd(hour));    // If you want 12 hour am/pm you need to set bit 6 (also need to change readDateDS1307)
   Wire.write(decToBcd(dayOfWeek));
   Wire.write(decToBcd(dayOfMonth));
   Wire.write(decToBcd(month));
   Wire.write(decToBcd(year));
+  //Wire.write(decToBcd(0x10 & 0x93));  // Controls the SQW output
   myerr = Wire.endTransmission(1);
-  if (myerr) {
-    Serial.print("Ended transmission with err:");
-    Serial.println(myerr);
-    Serial.println("0: Success");
-    Serial.println("1: Data too long to fit in transmit buffer");
-    Serial.println("2: Received NACK on transmit of address");
-    Serial.println("3: Received NACK on transmit of data");
-    Serial.println("4: Other error");
+  
+  Serial.print("Ended transmission with error ");
+  switch (myerr) {
+    case 0: Serial.println("0: Success"); break;
+    case 1: Serial.println("1: Data too long to fit in transmit buffer"); break;
+    case 2: Serial.println("2: Received NACK on transmit of address"); break;
+    case 3: Serial.println("3: Received NACK on transmit of data"); break;
+    case 4: Serial.println("4: Other error"); break;
   }
+  
+  /*RtcWrite(0x00,second);
+  RtcWrite(0x01,minute);
+  RtcWrite(0x02,hour);
+  RtcWrite(0x03,dayOfWeek);
+  RtcWrite(0x04,dayOfMonth);
+  RtcWrite(0x05,month);
+  RtcWrite(0x06,year);*/
 }
 
 // Gets the date and time from the DS1307
@@ -261,7 +383,7 @@ void readDateDS1307() {
   Wire.write(byte(0x00));
   Wire.endTransmission();
 
-  Wire.requestFrom(clockAddress, 7);
+  Wire.requestFrom(clockAddress, 7);  // 8 to read control
 
   // A few of these need masks because certain bits are control bits
   second     = bcdToDec(Wire.read() & 0x7f);
@@ -271,6 +393,7 @@ void readDateDS1307() {
   dayOfMonth = bcdToDec(Wire.read());
   month      = bcdToDec(Wire.read());
   year       = bcdToDec(Wire.read());
+  //control    = bcdToDec(Wire.read());
   
   newtime = (hour * 60) + minute;
 }
@@ -303,40 +426,8 @@ void printCurrentTime() {
   if (year < 10)
     Serial.print("0");
   Serial.println(year, DEC);
+//  Serial.print("Control = 0x");
+//  if (control < 16)
+//    Serial.print("0");
+//  Serial.println(control, HEX);
 }
-
-/*void getClkStatus() {
-  curr_clk = digitalRead(clkPin);
-  Serial.print("CLK pin = ");
-  Serial.println(curr_clk);
-
-  if (curr_clk == 1 && prev_clk == 0) {  // Rising Edge
-    clk_rise = 1;
-    clk_high = 1;
-    clk_fall = 0;
-    clk_low = 0;
-    Serial.println("CLK Posedge");
-  } else if (curr_clk == 1 && prev_clk == 1) {  // CLK high
-    clk_rise = 0;
-    clk_high = 1;
-    clk_fall = 0;
-    clk_low = 0;
-    Serial.println("CLK High");
-  } else if (curr_clk == 0 && prev_clk == 1) {  // Falling Edge
-    clk_rise = 0;
-    clk_high = 0;
-    clk_fall = 1;
-    clk_low = 1;
-    Serial.println("CLK Negedge");
-  } else if (curr_clk == 0 && prev_clk == 0) {  // CLK low
-    clk_rise = 0;
-    clk_high = 0;
-    clk_fall = 0;
-    clk_low = 1;
-    Serial.println("CLK Low");
-  } else {
-    Serial.print("Can't read CLK pin ");
-    Serial.println(clkPin);
-  }
-  prev_clk = curr_clk;
-}*/
