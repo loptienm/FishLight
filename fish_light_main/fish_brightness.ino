@@ -96,7 +96,7 @@ float wwledsched(int curr_time) {
  // Bring Warm led from 100% (about 7pm) to 0% (about 9pm)
   
  if (curr_time >= 0 && curr_time < (5 * 60)) {
-   WWLevel = 0;
+   WWLevel = MaxBrightPWM * 0.1;
  }
  
  if (curr_time >= (5 * 60) && curr_time <= (9 * 60)) {
@@ -112,7 +112,7 @@ float wwledsched(int curr_time) {
  }
  
  if (curr_time > (21 * 60)) {
-   WWLevel = 0;
+   WWLevel = MaxBrightPWM * 0.1;
  }
  
  return WWLevel;
@@ -141,7 +141,8 @@ float blledsched(int curr_time) {
   //102.3| /                      \______/                      \
   //    0|/______________________________________________________\__
   //      
-   
+
+/*
   // Bring Blue led from 100% (about 12am?) to 10% (about 12:30am?) 0 - 30, 1023.0 - 102.3
   if (curr_time >= 0 && curr_time <= (0.5 * 60)) {
     BlueLevel = ((MaxBrightPWM - MaxBrightPWM * 0.1) / (0.0 - (0.5 * 60.0))) * (curr_time - (0.5 * 60.0)) + (MaxBrightPWM * 0.1); 
@@ -181,7 +182,12 @@ float blledsched(int curr_time) {
   if (curr_time > (22 * 60)) {
     BlueLevel = MaxBrightPWM;
   }
-  
+*/
+
+if (curr_time >= (21 * 60) || curr_time <= (5 * 60)) {
+    BlueLevel = MaxBrightPWM * 0.1;
+  }
+
   return BlueLevel;
 }
 
