@@ -1,8 +1,12 @@
+///////////////////////////////
+//
 // This is the root file for the fish light project and 
 // it only contains the global variables.  There is no 
 // logic in this file at all.  Each block of code has been 
 // placed into its corresponding <fish_*> file to make it 
 // easier to maintain.
+//
+///////////////////////////////
 
 #include <Wire.h>
 #include <LiquidCrystal.h>

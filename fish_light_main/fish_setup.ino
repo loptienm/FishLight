@@ -1,8 +1,13 @@
+///////////////////////////////
+//
 // This file has the setup function for the fish light project.
 // This setup function does all the required initialization and gets run first.
+//
+///////////////////////////////
 
 void setup()  {
   Wire.begin();
+  //Serial.begin(115200);
   lcd.begin(16, 2);
   lcd.cursor();
   lcd_cursor_loc[0] = 0;  // Init the cursor location
@@ -29,9 +34,7 @@ void setup()  {
   Serial.begin(115200);
   printCurrentTime();  
   targetnewtime = newtime;
-  lcd.print("Board Init");
-  lcd.setCursor(0,1);
-  lcd.print("Starting...");
+  lcd.print("Board Starting...");
   lcd.setCursor(lcd_cursor_loc[0],lcd_cursor_loc[1]);
   Serial.println("Board Initialized, ready for commands.");
   delay(2000);

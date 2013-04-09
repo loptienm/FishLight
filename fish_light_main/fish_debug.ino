@@ -1,8 +1,12 @@
+///////////////////////////////
+//
 // These are functions that setup the debug capability of the fish light.
 // The only function that is very useful right now is debug_brightness, but
 //  this just allows the user to change the amount of delay between time 
 //  steps from 60 seconds to X number of cycles.
 // This also has the function to get and process serial commands.
+//
+///////////////////////////////
 
 double get_serial_number() {
   double serial_number = 0;
@@ -74,7 +78,7 @@ void debug_help() {
     Serial.println("Enabling time debug. (NOT FUNCTIONAL)");
   }
 }
-
+*/
 void debug_brightness() {
   if (dbgBright){  // If already debugging, turn it off
     dbgBright = 0;
@@ -88,7 +92,7 @@ void debug_brightness() {
     read_debug_delay();
   }
 }
-
+/*
 void debug_buttons() {  
   if (dbgButtons) {  // If already debugging, turn it off
     Serial.println("Disabling button debug.");
@@ -190,8 +194,10 @@ void get_serial_command() {
     Serial.print(data);
     Serial.println(".");
   }
-  /*else if (command == 68 || command == 100) {  // command == 'D' | 'd': debug modes
-    if (! Serial.available())
+  else if (command == 68 || command == 100) {  // command == 'D' | 'd': debug modes
+    debug_brightness();
+
+    /*if (! Serial.available())
       Serial.println("Debug what?");
 
     if (! Serial.available())
@@ -232,8 +238,8 @@ void get_serial_command() {
       debug_none();
     }
     else 
-      Serial.println("Unknown debug command!");
-  }*/
+      Serial.println("Unknown debug command!");*/
+  }
   else {
     Serial.println("Unknown serial command!");
   }

@@ -1,6 +1,10 @@
+///////////////////////////////
+//
 // This contains the functions used to find the max brightness
 // from the POT and to set the brightness of the leds according
 // to the time of day.
+//
+///////////////////////////////
 
 ///////////////////////////////
 //
@@ -96,7 +100,7 @@ float wwledsched(int curr_time) {
  // Bring Warm led from 100% (about 7pm) to 0% (about 9pm)
   
  if (curr_time >= 0 && curr_time < (5 * 60)) {
-   WWLevel = MaxBrightPWM * 0.1;
+   WWLevel = MaxBrightPWM * 0.01;
  }
  
  if (curr_time >= (5 * 60) && curr_time <= (9 * 60)) {
@@ -112,7 +116,7 @@ float wwledsched(int curr_time) {
  }
  
  if (curr_time > (21 * 60)) {
-   WWLevel = MaxBrightPWM * 0.1;
+   WWLevel = MaxBrightPWM * 0.01;
  }
  
  return WWLevel;
@@ -185,7 +189,7 @@ float blledsched(int curr_time) {
 */
 
 if (curr_time >= (21 * 60) || curr_time <= (5 * 60)) {
-    BlueLevel = MaxBrightPWM * 0.1;
+    BlueLevel = MaxBrightPWM * 0.01;
   }
 
   return BlueLevel;

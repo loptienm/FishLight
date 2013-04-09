@@ -1,5 +1,9 @@
+///////////////////////////////
+//
 // This file holds the fucntions to calculate the time, program the RTC time,
 // and read the RTC to keep accurate time.
+//
+///////////////////////////////
 
 ///////////////////////////////
 //

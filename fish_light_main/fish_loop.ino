@@ -1,8 +1,12 @@
+///////////////////////////////
+//
 // This file holds the loop function for the fish light project.
 // This loop function runs in a continuous loop (hence the name) while
 // the Arduino is powered on.  One loop does not correspond to a second
 // and the time length of a loop completely finishing is dependent on
 // what things happen in it (such as serial printing or button scanning).
+//
+///////////////////////////////
 
 void loop() {
   if (Serial.available()) {

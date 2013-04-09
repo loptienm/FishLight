@@ -31,8 +31,8 @@ void getButtonFunction() {
     } else {
       moveCursorDown();
     }
-  else if (currKey == KEY_CENT && (keyPressed || (keyHeld && keyHeldCnt > keyHeldDur && keyIntvlCnt == keyHeldIntvl))){
-    if (lcd_cursor_loc[1] == 1 && (lcd_cursor_loc[0] >= 0 && lcd_cursor_loc[0] <= 4 && lcd_cursor_loc[0] != 2)) {
+  else if (currKey == KEY_CENT && (keyPressed || (keyHeld && keyHeldCnt > keyHeldDur && keyIntvlCnt == keyHeldIntvl))) {
+    if (lcd_cursor_loc[1] == 1 && (lcd_cursor_loc[0] >= 1 && lcd_cursor_loc[0] <= 5)) {
       setting_value = 1;  // Set value if it is inside valid time area
       lcd.blink();
       setTimeButtons();
