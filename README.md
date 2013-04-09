@@ -1,5 +1,5 @@
 FishLight - An LED light for my fishtank.
-Created by Mike Loptien in 2013 in Longmont Colorad
+Created by Mike Loptien in 2013 in Longmont Colorado
 =========
 
 This project is an Arduino project implementing an automatic lighting array for
