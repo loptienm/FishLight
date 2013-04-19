@@ -80,7 +80,7 @@ void moveCursorDown() {
 void getLCDblStatus() {
     
   // If LCD idle_flag has been reset, make sure to reset the dim_count
-  if (idle_flag == 0) {
+  if (idle_flag == 0 && (!keyHeld || !keyPressed)) {
     dim_count = 0;
     idle_flag = 1;  // flag to show LCD should be counting toward idle state
     second_count = 0;

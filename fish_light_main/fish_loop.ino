@@ -65,7 +65,6 @@ void loop() {
     lcd.setCursor(0,1);
     lcd.print("max brightness");
     delay(1000);*/
-    getmaxbrightness();
     //Serial.println("After getting max brightness.");
   
     // Get the LED brightness at the current time
