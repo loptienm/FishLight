@@ -36,16 +36,15 @@ const int LCD6Pin = 2;
 // Global vars for buttons
 int currKey = 0;                 // The state of the button that is most recently pressed
 int prevKey = 0;                 // The state of the button that was last pressed
-int dbncKey = 0;                 // The state of the button when we first started debouncing
 int keyPressed = 0;              // Tells if a key is pressed, no keys are pressed initially
-int keyReleased = 0;             // Tells if a key is released, no keys are pressed initially
+int keyReleased = 1;             // Tells if a key is released, no keys are pressed initially
 int keyHeld = 0;                 // Tells if a key is being held, no keys are pressed initially
 int keyHeldCnt = 0;              // Counter which counts cycles since button was pressed
 int keyHeldDur = 700;            // Value to compare with to see how long a button has been held
 int keyIntvlCnt = 0;             // Counter which counts cycles to determine how often the cursor gets moved
 int keyHeldIntvl = 0;            // Holds the desired interval to count up to 
 int long_intvl = 350;            // Value to count to in order to delay between changing the cursor location while a button is held
-int short_intvl = 125;           // Value to count to in order to delay between changing the cursor location while a button is held
+int short_intvl = 175;           // Value to count to in order to delay between changing the cursor location while a button is held
 int keyHeldStrokeCnt = 0;        // Counts the number of cursor updates while a button is held. After KeyHeldStrokeLimit, it will count faster
 int keyHeldStrokeLimit = 8;      // Value to count to for number of cursor updates while a button is held
 int debounce_cnt = 0;            // Counter to count from a button value change up to the debounce_delay to debounce buttons
@@ -64,6 +63,7 @@ byte second, minute, hour, dayOfWeek, dayOfMonth, month, year, control;
 const int totalDigs = 12;    // Number of digits needed to hold time
 int mytime[totalDigs];       // My time holder ([12:11] month, [10:9] dayofMonth, [8:7] year, [6] dayOfWeek,
                              //                 [5:4] hour, [3:2] minute, [1:0] second)
+int mytmptime[totalDigs];    // My temporary time holder when setting time with buttons
 int newtime = 0;             // My calculated time to pass to LED schedule tasks
 int targetnewtime = 0;       // Previous value of my calculated time to tell if we need to redraw lcd
 int second_count = 0;        // Counter for number of seconds since some resetting event (like idle_flag = 0)

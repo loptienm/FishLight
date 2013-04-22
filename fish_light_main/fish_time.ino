@@ -140,10 +140,10 @@ void changeTimeDig(int location, int up_downb) {
   //Serial.print("In changeTimeDig, location = ");
   Serial.print(location);
   switch (location) {
-    case 0: dig = 5; break;
-    case 1: dig = 4; break;
-    case 3: dig = 3; break;
-    case 4: dig = 2; break;
+    case 1: dig = 5; break;
+    case 2: dig = 4; break;
+    case 4: dig = 3; break;
+    case 5: dig = 2; break;
     default: return;
   }
   //Serial.print(", dig = ");
@@ -151,15 +151,15 @@ void changeTimeDig(int location, int up_downb) {
   
   // Set new time
   if (up_downb) {
-    mytime[dig]++;
+    mytmptime[dig]++;
   } else if (!up_downb) {
-    mytime[dig]--;
+    mytmptime[dig]--;
   }
   
   // Print the new value
   checkTimeDigs();
-  lcd.print(mytime[dig]);
-  lcd.setCursor(lcd_cursor_loc[0],lcd_cursor_loc[1]);
+  lcd.print(mytmptime[dig]);
+  //lcd.setCursor(lcd_cursor_loc[0],lcd_cursor_loc[1]);
 }
 
 // Change time from array of digits to numerical values for each place (hours, minutes, seconds, etc.)
@@ -171,7 +171,24 @@ void calcTimeParams() {
   hour       = (byte) (mytime[5] * 10 + mytime[4]);
   minute     = (byte) (mytime[3] * 10 + mytime[2]);
   second     = (byte) (mytime[1] * 10 + mytime[0]); 
-  //newtime    = (hour * 60) + minute;
+  newtime    = (hour * 60) + minute;
+}
+
+// Change time from numerical values to an array of digits
+void calcTimeDigs() {
+  mytime[12] = month / 10;
+  mytime[11] = month - mytime[12];
+  mytime[10] = dayOfMonth / 10;
+  mytime[9]  = dayOfMonth - mytime[10];
+  mytime[8]  = year / 10;
+  mytime[7]  = year - mytime[8];
+  mytime[6]  = dayOfWeek;
+  mytime[5]  = hour / 10;
+  mytime[4]  = hour - mytime[5];  
+  mytime[3]  = minute / 10;
+  mytime[2]  = minute - mytime[3];
+  mytime[1]  = second / 10;
+  mytime[0]  = second - mytime[1];
 }
 
 // Check to make sure programmed time is in correct time boundaries (24 hr clock)
@@ -219,60 +236,60 @@ void checkTime() {
 // Check each time digit for rollover (only useful when using buttons to set time)
 void checkTimeDigs() {
   // Time checking for upper bound rollover (ex: 32 days in a month)
-  if (mytime[12] > 1)  // Month
-    mytime[12] = 0;
-  if (mytime[11] > 9)
-    mytime[11] = 0;
-  if (mytime[10] > 3)  // DayofMonth
-    mytime[10] = 0;
-  if (mytime[9] > 9)
-    mytime[9] = 0;
-  if (mytime[8] > 9)  // Year
-    mytime[8] = 0;
-  if (mytime[7] > 9)
-    mytime[7] = 0;
-  if (mytime[6] > 7)  // DayofWeek
-    mytime[6] = 0;
-  if (mytime[5] > 2)  // Hour
-    mytime[5] = 0;
-  if (mytime[4] > 9)
-    mytime[4] = 0;
-  if (mytime[3] > 5)  // Minute
-    mytime[3] = 0;
-  if (mytime[2] > 9)
-    mytime[2] = 0;
-  if (mytime[1] > 5)  // Second
-    mytime[1] = 0;
-  if (mytime[0] > 9)
-    mytime[0] = 0;
+  if (mytmptime[12] > 1)  // Month
+    mytmptime[12] = 0;
+  if (mytmptime[11] > 9)
+    mytmptime[11] = 0;
+  if (mytmptime[10] > 3)  // DayofMonth
+    mytmptime[10] = 0;
+  if (mytmptime[9] > 9)
+    mytmptime[9] = 0;
+  if (mytmptime[8] > 9)  // Year
+    mytmptime[8] = 0;
+  if (mytmptime[7] > 9)
+    mytmptime[7] = 0;
+  if (mytmptime[6] > 7)  // DayofWeek
+    mytmptime[6] = 0;
+  if (mytmptime[5] > 2)  // Hour
+    mytmptime[5] = 0;
+  if (mytmptime[4] > 9)
+    mytmptime[4] = 0;
+  if (mytmptime[3] > 5)  // Minute
+    mytmptime[3] = 0;
+  if (mytmptime[2] > 9)
+    mytmptime[2] = 0;
+  if (mytmptime[1] > 5)  // Second
+    mytmptime[1] = 0;
+  if (mytmptime[0] > 9)
+    mytmptime[0] = 0;
     
   // Time checking for lower bound rollover (ex: -3 days in a month)
-  if (mytime[12] < 0)  // Month
-    mytime[12] = 1;
-  if (mytime[11] < 0)
-    mytime[11] = 9;
-  if (mytime[10] < 0)  // DayofMonth
-    mytime[10] = 3;
-  if (mytime[9] < 0)
-    mytime[9] = 9;
-  if (mytime[8] < 0)  // Year
-    mytime[8] = 9;
-  if (mytime[7] < 0)
-    mytime[7] = 9;
-  if (mytime[6] < 0)  // DayofWeek
-    mytime[6] = 7;
-  if (mytime[5] < 0)  // Hour
-    mytime[5] = 2;
-  if (mytime[4] < 0)
-    mytime[4] = 9;
-  if (mytime[3] < 0)  // Minute
-    mytime[3] = 5;
-  if (mytime[2] < 0)
-    mytime[2] = 9;
-  if (mytime[1] < 0)  // Second
-    mytime[1] = 5;
-  if (mytime[0] < 0)
-    mytime[0] = 9;
+  if (mytmptime[12] < 0)  // Month
+    mytmptime[12] = 1;
+  if (mytmptime[11] < 0)
+    mytmptime[11] = 9;
+  if (mytmptime[10] < 0)  // DayofMonth
+    mytmptime[10] = 3;
+  if (mytmptime[9] < 0)
+    mytmptime[9] = 9;
+  if (mytmptime[8] < 0)  // Year
+    mytmptime[8] = 9;
+  if (mytmptime[7] < 0)
+    mytmptime[7] = 9;
+  if (mytmptime[6] < 0)  // DayofWeek
+    mytmptime[6] = 7;
+  if (mytmptime[5] < 0)  // Hour
+    mytmptime[5] = 2;
+  if (mytmptime[4] < 0)
+    mytmptime[4] = 9;
+  if (mytmptime[3] < 0)  // Minute
+    mytmptime[3] = 5;
+  if (mytmptime[2] < 0)
+    mytmptime[2] = 9;
+  if (mytmptime[1] < 0)  // Second
+    mytmptime[1] = 5;
+  if (mytmptime[0] < 0)
+    mytmptime[0] = 9;
 }
 
 // 1) Sets the date and time on the ds1307 via SERIAL ONLY
