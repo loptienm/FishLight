@@ -6,38 +6,48 @@
 
 // Function to decide what to do if there is a button press
 void getButtonFunction() {
+  
   getButtonState();
+  
   if (currKey == KEY_RIGHT && (keyPressed || (keyHeld && keyHeldCnt > keyHeldDur && keyIntvlCnt == keyHeldIntvl)))
-    if (setting_value) {
-      moveCursorRight();
-    } else {
-      moveCursorRight();
-    }
+    moveCursorRight();
+    
   else if (currKey == KEY_LEFT && (keyPressed || (keyHeld && keyHeldCnt > keyHeldDur && keyIntvlCnt == keyHeldIntvl)))
-    if (setting_value) {
-      moveCursorLeft();
-    } else {
-      moveCursorLeft();
-    }
+    moveCursorLeft();
+    
   else if (currKey == KEY_UP && (keyPressed || (keyHeld && keyHeldCnt > keyHeldDur && keyIntvlCnt == keyHeldIntvl)))
-    if (setting_value) {
+    if (setting_time) {
       changeTimeDig(lcd_cursor_loc[0], 1);  // Change value up
+    } else if (setting_bright) {
+      change_max_bright(lcd_cursor_loc[0], 1);  // Change value up
     } else {
       moveCursorUp();
     }
+    
   else if (currKey == KEY_DOWN && (keyPressed || (keyHeld && keyHeldCnt > keyHeldDur && keyIntvlCnt == keyHeldIntvl)))
-    if (setting_value) {
+    if (setting_time) {
       changeTimeDig(lcd_cursor_loc[0], 0);  // Change value down
+    } else if (setting_bright) {
+      change_max_bright(lcd_cursor_loc[0], 0);  // Change value down
     } else {
       moveCursorDown();
     }
+    
   else if (currKey == KEY_CENT && (keyPressed || (keyHeld && keyHeldCnt > keyHeldDur && keyIntvlCnt == keyHeldIntvl))) {
-    if (lcd_cursor_loc[1] == 1 && (lcd_cursor_loc[0] >= 1 && lcd_cursor_loc[0] <= 5)) {
+    if (!(setting_time || setting_bright) && (lcd_cursor_loc[0] >= 1 && lcd_cursor_loc[0] <= 5) && lcd_cursor_loc[1] == 1) {  // Set the time
       setTimeButtons();
-    } else if (setting_value && lcd_cursor_loc[0] == 12 && lcd_cursor_loc[1] == 1) {  // Clicked yes to save time
+    } else if (setting_time && (lcd_cursor_loc[0] == 12 || lcd_cursor_loc[0] == 14) && lcd_cursor_loc[1] == 1) {  // Clicked yes to save time
       saveTimeButtons();
+    } else if (!(setting_time || setting_bright) && lcd_cursor_loc[0] == 7  || lcd_cursor_loc[0] == 8  && lcd_cursor_loc[1] == 1) {  // Set the CW LEDs brightness
+      set_brightness_buttons(CW_LEDS);
+    } else if (!(setting_time || setting_bright) && lcd_cursor_loc[0] == 10 || lcd_cursor_loc[0] == 11 && lcd_cursor_loc[1] == 1) {  // Set the WW LEDs brightness
+      set_brightness_buttons(WW_LEDS);
+    } else if (!(setting_time || setting_bright) && lcd_cursor_loc[0] == 13 || lcd_cursor_loc[0] == 14 && lcd_cursor_loc[1] == 1) {  // Set the BL LEDs brightness
+      set_brightness_buttons(BL_LEDS);
+    } else if (setting_bright && lcd_cursor_loc[0] == 15) {
+      //save_brightness_buttons();
     } else {
-//      setting_value = 0;
+//      setting_time = 0;
 //      lcd.noBlink();
 //      MainScreenLCD(newtime, CWBright*100.0/255.0, WWBright*100.0/255.0, BLBright*100.0/255.0);
     }

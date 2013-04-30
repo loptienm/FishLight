@@ -54,6 +54,26 @@ void getmaxbrightness() {
   MaxBrightPWM = total / numReadings;    
 }
 
+void change_max_bright(int location, int up_downb) {
+  // brightness is 3 digits wide
+  // location starts at X coordinate 0 ([0:2])
+  int mytmpbright[3];
+  //int newbright = 0;
+
+  // Set new brightness
+  if (up_downb) {
+    mytmpbright[location]++;
+  } else if (!up_downb) {
+    mytmpbright[location]--;
+  }
+  
+  //newbright = mytmpbright[0] * 100 + mytmpbright[1] * 10 + mytmpbright[2];
+  
+  // Print the new value
+  lcd.print(mytmpbright[location]);
+  lcd.setCursor(lcd_cursor_loc[0],lcd_cursor_loc[1]);
+}
+
 ////////////////////////////////////
 //
 // Cool White LED schedule

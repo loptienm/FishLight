@@ -14,9 +14,9 @@ void setup()  {
   
   // Initialize the LCD Screen
   lcd.begin(16, 2);  // Initialize a 16x2 LCD screen
-  lcd.clear();       // Clear anything that might still be on the LCD screen
-  lcd_cursor_loc[0] = 0; // Init the cursor location
-  lcd_cursor_loc[1] = 0;
+  lcd.createChar(0, backslash);  // setup custom character 0
+  lcd.clear();  // Clear anything that might still be on the LCD screen
+  lcd_cursor_loc[0] = 0;  lcd_cursor_loc[1] = 0; // Init the cursor location
   lcd.setCursor(lcd_cursor_loc[0],lcd_cursor_loc[1]);  // Set the cursor location
   analogWrite(LCDBackLightPin, lcd_use_lvl);  // Turn on the LCD backlight
   

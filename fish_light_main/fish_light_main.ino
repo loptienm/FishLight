@@ -51,7 +51,8 @@ int keyHeldStrokeLimit = 8;      // Value to count to for number of cursor updat
 int debounce_cnt = 0;            // Counter to count from a button value change up to the debounce_delay to debounce buttons
 int debounce_delay = 35;         // Value to count up to once a button has been pressed.  If the button value is the same, its a true button press
 int debounce_en = 0;             // Enable the button debouncing counter
-int setting_value = 0;           // Flag to tell buttons to either move cursor or set a number value
+int setting_time = 0;            // Flag to tell buttons to either move cursor or set a time value
+int setting_bright = 0;          // Flag to tell buttons to either move cursor or set a brightness value
 //////////////////////////
 
 
@@ -143,6 +144,24 @@ const int num_digs = 10;         // Number of digits allowed when getting a seri
 #define LCD_TOP_EDGE   1   // Character number of the lcd screens top edge
 #define LCD_BTM_EDGE   0   // Character number of the lcd screens bottom edge
 
+#define CW_LEDS 1
+#define WW_LEDS 2
+#define BL_LEDS 3
+
+//////////////////////////
+
+//////////////////////////
+// Custom Characters
+// '\' because it doesnt exist on my lcd screen...
+byte backslash[8] = {
+  B00000,
+  B10000,
+  B01000,
+  B00100,
+  B00010,
+  B00001,
+  B00000,
+};
 //////////////////////////
 
 

@@ -56,7 +56,7 @@ void loop() {
   //Serial.println("After check time.");
 
   // Dont do stuff if we are setting the time with buttons
-  if (!setting_value){
+  if (!setting_time && !setting_bright){
     // Get the brightness as defined by the silver potentiometer
     getmaxbrightness();
     /*lcd.clear();

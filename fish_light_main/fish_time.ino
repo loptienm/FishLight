@@ -136,9 +136,10 @@ void getClkStatus() {
 void changeTimeDig(int location, int up_downb) {
   // mytime ([12:11] month, [10:9] dayofMonth, [8:7] year, [6] dayOfWeek,
   //         [5:4] hour, [3:2] minute, [1:0] second)
+
   int dig = 0;
   //Serial.print("In changeTimeDig, location = ");
-  Serial.print(location);
+  //Serial.print(location);
   switch (location) {
     case 1: dig = 5; break;
     case 2: dig = 4; break;
@@ -159,7 +160,7 @@ void changeTimeDig(int location, int up_downb) {
   // Print the new value
   checkTimeDigs();
   lcd.print(mytmptime[dig]);
-  //lcd.setCursor(lcd_cursor_loc[0],lcd_cursor_loc[1]);
+  lcd.setCursor(lcd_cursor_loc[0],lcd_cursor_loc[1]);
 }
 
 // Change time from array of digits to numerical values for each place (hours, minutes, seconds, etc.)
@@ -177,18 +178,18 @@ void calcTimeParams() {
 // Change time from numerical values to an array of digits
 void calcTimeDigs() {
   mytime[12] = month / 10;
-  mytime[11] = month - mytime[12];
+  mytime[11] = month - mytime[12] * 10;
   mytime[10] = dayOfMonth / 10;
-  mytime[9]  = dayOfMonth - mytime[10];
+  mytime[9]  = dayOfMonth - mytime[10] * 10;
   mytime[8]  = year / 10;
-  mytime[7]  = year - mytime[8];
+  mytime[7]  = year - mytime[8] * 10;
   mytime[6]  = dayOfWeek;
   mytime[5]  = hour / 10;
-  mytime[4]  = hour - mytime[5];  
+  mytime[4]  = hour - mytime[5] * 10;
   mytime[3]  = minute / 10;
-  mytime[2]  = minute - mytime[3];
+  mytime[2]  = minute - mytime[3] * 10;
   mytime[1]  = second / 10;
-  mytime[0]  = second - mytime[1];
+  mytime[0]  = second - mytime[1] * 10;
 }
 
 // Check to make sure programmed time is in correct time boundaries (24 hr clock)
