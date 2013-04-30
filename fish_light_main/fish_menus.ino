@@ -43,7 +43,9 @@ void print_brightness_peaks_lcd(int numPeaks) {
     lcd.setCursor(0,0); lcd.print("Peaks:          ");
     lcd.setCursor(0,1); lcd.print("  0  ___________");
   } else if (numPeaks == 1) {
-    lcd.setCursor(0,0); lcd.print("Peaks: /-----");
+    lcd.setCursor(0,0); lcd.print("Peaks: /");
+    lcd.write(byte(1));lcd.write(byte(1));lcd.write(byte(1));
+    lcd.write(byte(1));lcd.write(byte(1));
     lcd.write(byte(0));  // '\'
     lcd.setCursor(0,1); lcd.print("  1  _/       ");
     lcd.write(byte(0));  // '\'

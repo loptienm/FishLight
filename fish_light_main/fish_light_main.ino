@@ -87,10 +87,26 @@ int index = 0;               // The index of the current reading
 int total = 0;               // The running total
 int average = 0;             // The average
 int MaxBrightANA = 1023;     // Define the max brightness allowed by the silver potentiometer
-int MaxBrightPWM = 255;      // Define the max brightness allowed in PWM terms
+int MaxBrightPWM = 255;      // Define the max brightness allowed in PWM terms (resolution is 0-255)
 int BLBright = 0;            // The current brightness of the Blue LEDs
 int CWBright = 0;            // The current brightness of the Cool White LEDs
 int WWBright = 0;            // The current brightness of the Warm White LEDs
+
+struct MY_LED {              // Structure of variables that the LEDs could have
+  int max_brightness;        // This is the maximum brightness allowed for this LED (0-255) corresponding to PWM resolution
+  int cur_brightness;        // This is the current brightness for this LED (0-255)
+  int peaks;                 // This is the number of brightness peaks allowed for this LED (0-2)
+  int on_time[2];            // This is the time that each peak should be ON (times are in minutes since midnight = hour * 60 + minute)
+  int on_start[2];           // This is the time that each peak should START turning on
+  int off_time[2];           // This is the time that each peak should be OFF
+  int off_start[2];          // This is the time that each peak should START turning off
+  int set;                   // Flag to tell if this LED is being set (# peaks, brightness, etc)
+};
+
+MY_LED s_cw_led = {255,0,1,0,0,0,0,0};
+MY_LED s_ww_led = {255,0,1,0,0,0,0,0};
+MY_LED s_bl_led = {255,0,1,0,0,0,0,0};
+
 //////////////////////////
 
 
@@ -115,7 +131,8 @@ int lcd_idle_time = 10;         // 10 seconds till the lcd dims its backlight
 int lcd_off_time  = 15;         // 15 seconds till the lcd turns off its backlight
 int idle_flag     = 0;          // Flag for determining if system is idle
 int dim_count     = 0;          // Counter to delay between dimming the lcd each leveldim_count
-int lcd_cursor_loc[2];          // Current location of the LCD cursor ([0] = horizontal dimension, [1] = vertical dimension)
+int lcd_cursor_loc[2];          // Current location of the LCD cursor ([0] = horizontal dimension, [1] = vertical dimension, top left corner is 0,0)
+int lcd_digs[16];               // A place holder for all horizontal digits on the LCD.  Used to set time, peaks, brightness, etc.
 //////////////////////////
 
 //////////////////////////
@@ -127,7 +144,7 @@ double dbgDelay = 0;             // Number of loop() cycles to count to between 
 int dbg_cnt = 0;                 // Counter for keeping track of cycles betwen time steps (~300 for a second)
 int dbgLcd = 0;                  // Flag to debug the LCD screen functions
 int dbgSerial = 0;               // Flag to debug the Serial functions
-const int num_digs = 10;         // Number of digits allowed when getting a serial number
+const int num_digs = 10;         // Number of digits allowed when getting a number over serial
 //////////////////////////
 
 //////////////////////////
@@ -160,6 +177,16 @@ byte backslash[8] = {
   B00100,
   B00010,
   B00001,
+  B00000,
+};
+
+byte topbar[8] = {
+  B00000,
+  B11111,
+  B00000,
+  B00000,
+  B00000,
+  B00000,
   B00000,
 };
 //////////////////////////
