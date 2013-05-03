@@ -88,25 +88,22 @@ int total = 0;               // The running total
 int average = 0;             // The average
 int MaxBrightANA = 1023;     // Define the max brightness allowed by the silver potentiometer
 int MaxBrightPWM = 255;      // Define the max brightness allowed in PWM terms (resolution is 0-255)
-int BLBright = 0;            // The current brightness of the Blue LEDs
-int CWBright = 0;            // The current brightness of the Cool White LEDs
-int WWBright = 0;            // The current brightness of the Warm White LEDs
 
 struct MY_LED {              // Structure of variables that the LEDs could have
-  int max_brightness;        // This is the maximum brightness allowed for this LED (0-255) corresponding to PWM resolution
-  int cur_brightness;        // This is the current brightness for this LED (0-255)
+  char * name;               // Name of the LED string this is describing
+  int curr_bright;           // This is the current brightness for this LED (0-255)
   int peaks;                 // This is the number of brightness peaks allowed for this LED (0-2)
-  int on_time[2];            // This is the time that each peak should be ON (times are in minutes since midnight = hour * 60 + minute)
   int on_start[2];           // This is the time that each peak should START turning on
-  int off_time[2];           // This is the time that each peak should be OFF
+  int on_time[2];            // This is the time that each peak should be ON (times are in minutes since midnight = hour * 60 + minute)
+  int on_bright[2];          // This is the brightness while the LED is on for each peak (0-255)
   int off_start[2];          // This is the time that each peak should START turning off
+  int off_time[2];           // This is the time that each peak should be OFF
   int set;                   // Flag to tell if this LED is being set (# peaks, brightness, etc)
 };
 
-MY_LED s_cw_led = {255,0,1,0,0,0,0,0};
-MY_LED s_ww_led = {255,0,1,0,0,0,0,0};
-MY_LED s_bl_led = {255,0,1,0,0,0,0,0};
-
+MY_LED s_cw_led = {"cw",0,1,0,0,0,0,0,0};
+MY_LED s_ww_led = {"ww",0,1,0,0,0,0,0,0};
+MY_LED s_bl_led = {"bl",0,1,0,0,0,0,0,0};
 //////////////////////////
 
 
@@ -164,6 +161,9 @@ const int num_digs = 10;         // Number of digits allowed when getting a numb
 #define CW_LEDS 1
 #define WW_LEDS 2
 #define BL_LEDS 3
+#define CWBright s_cw_led.curr_bright
+#define WWBright s_ww_led.curr_bright
+#define BLBright s_bl_led.curr_bright
 
 //////////////////////////
 

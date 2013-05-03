@@ -74,144 +74,49 @@ void change_max_bright(int location, int up_downb) {
   lcd.setCursor(lcd_cursor_loc[0],lcd_cursor_loc[1]);
 }
 
-////////////////////////////////////
-//
-// Cool White LED schedule
-//
-////////////////////////////////////
-float cwledsched(int curr_time) {
- int CWLevel = 0;
- 
- // Bring Cool led from 0% (about 8am) to 100% (about 10am)
- // Bring Cool led from 100% (about 5pm) to 0% (about 7pm)
+int last_prnt = 0;
+void led_schedule(int curr_time, struct MY_LED my_led) {
+  int prnt = 0;
+  if (curr_time % 10 == 0 && last_prnt != curr_time) {
+    prnt = 1;
+    last_prnt = curr_time;
+  } else 
+    prnt = 0;
   
- if (curr_time >= 0 && curr_time < (8 * 60)) {
-   CWLevel = 0;
- }
- 
- if (curr_time >= (8 * 60) && curr_time <= (10 * 60)) {
-   CWLevel = ((MaxBrightPWM - 0) / ((10.0 * 60.0) - (8.0 * 60.0))) * (curr_time - (8.0 * 60.0));
- }
- 
-  if (curr_time > (10 * 60) && curr_time < (17 * 60)) {
-   CWLevel = MaxBrightPWM;
- }
- 
-  if (curr_time >= (17 * 60) && curr_time <= (19 * 60)) {
-   CWLevel = ((MaxBrightPWM - 0) / ((17.0 * 60.0) - (19.0 * 60.0))) * (curr_time - (19.0 * 60.0));
- }
- 
- if (curr_time > (19 * 60)) {
-   CWLevel = 0;
- }
- 
- return CWLevel;
-}
-
-////////////////////////////////////
-//
-// Warm White LED schedule
-//
-////////////////////////////////////
-float wwledsched(int curr_time) {
- int WWLevel = 0;
- 
- // Bring Warm led from 0% (about 5am) to 100% (about 9am)
- // Bring Warm led from 100% (about 7pm) to 0% (about 9pm)
-  
- if (curr_time >= 0 && curr_time < (5 * 60)) {
-   WWLevel = MaxBrightPWM * 0.01;
- }
- 
- if (curr_time >= (5 * 60) && curr_time <= (9 * 60)) {
-   WWLevel = ((MaxBrightPWM - 0) / ((9.0 * 60.0) - (5.0 * 60.0))) * (curr_time - (5.0 * 60.0));
- }
- 
-  if (curr_time > (9 * 60) && curr_time < (19 * 60)) {
-   WWLevel = MaxBrightPWM;
- }
- 
-  if (curr_time >= (19 * 60) && curr_time <= (21 * 60)) {
-   WWLevel = ((MaxBrightPWM - 0) / ((19.0 * 60.0) - (21.0 * 60.0))) * (curr_time - (21.0 * 60.0));
- }
- 
- if (curr_time > (21 * 60)) {
-   WWLevel = MaxBrightPWM * 0.01;
- }
- 
- return WWLevel;
-}
-
-////////////////////////////////////
-//
-// Blue LED schedule
-//
-////////////////////////////////////
-float blledsched(int curr_time) {
-  int BlueLevel = 0;
- 
-  // Bring Blue led from 100% (about 12am?) to 10% (about 12:30am?)
-  // Bring Blue led from 10% (about 3am?) to 100% (about 3:30am?)
-  // Bring Blue led from 100% (about 4am?) to 0% (about 6am?)
-  // 1023|          /----\                        /----\
-  //     |         /      \                      /      \
-  //     |        /        \                    /        \
-  //     |       /          \                  /          \
-  //     |      /            \                /            \
-  //511.5|     /              \              /              \
-  //     |    /                \            /                \
-  //     |   /                  \          /                  \
-  //     |  /                    \        /                    \
-  //102.3| /                      \______/                      \
-  //    0|/______________________________________________________\__
-  //      
-
-/*
-  // Bring Blue led from 100% (about 12am?) to 10% (about 12:30am?) 0 - 30, 1023.0 - 102.3
-  if (curr_time >= 0 && curr_time <= (0.5 * 60)) {
-    BlueLevel = ((MaxBrightPWM - MaxBrightPWM * 0.1) / (0.0 - (0.5 * 60.0))) * (curr_time - (0.5 * 60.0)) + (MaxBrightPWM * 0.1); 
+  if (prnt) {
+  Serial.print(curr_time);
+  Serial.print(", ");
+  Serial.print(my_led.name);
+  Serial.print(" led, ");
   }
   
-  // Hold Blue led at 10% from about 12:30am? to about 3:30am? 31 - 239, 102.3
-  if (curr_time > (0.5 * 60) && curr_time < (3.5 * 60)) {
-    BlueLevel = MaxBrightPWM * 0.1;
+  if (my_led.peaks > 0) {
+    for (int i = 0; i < my_led.peaks; i++) {
+      if (curr_time >= my_led.on_start[i] && curr_time <= my_led.on_time[i]) {  // Ramping up
+        my_led.curr_bright = ((0.0 - my_led.on_bright[i]) / (my_led.on_start[i] - my_led.on_time[i])) * (curr_time - my_led.on_start[i]);
+      }
+      else if (curr_time >= my_led.off_start[i] && curr_time <= my_led.off_time[i]) {  // Ramping down
+        my_led.curr_bright = ((my_led.on_bright[i] - 0.0) / (my_led.off_start[i] - my_led.off_time[i])) * (curr_time - my_led.off_time[i]);
+      }
+      else if (curr_time > my_led.on_time[i] && curr_time < my_led.off_start[i]) {  // Peak on
+        my_led.curr_bright = my_led.on_bright[i];
+      }
+      else if (my_led.name == "bl") {
+        if (curr_time > my_led.on_time[i] || curr_time < my_led.off_start[i]) {
+          my_led.curr_bright = my_led.on_bright[i];
+        }
+      }
+      else {
+        my_led.curr_bright = 0;
+      }
+      if (prnt)
+      Serial.print(my_led.curr_bright);
+    }  // for (int i = 0; i < my_led.peaks; i++)
   }
-  
-  // Bring Blue led from 10% (about 3:30am?) to 100% (about 4am?) 240 - 270, 102.3 - 1023.0
-  if (curr_time >= (3.5 * 60) && curr_time < (4 * 60)) {
-    BlueLevel = ((MaxBrightPWM - MaxBrightPWM * 0.1) / ((4.0 * 60.0) - (3.5 * 60.0))) * (curr_time - (3.5 * 60.0)) + (MaxBrightPWM * 0.1);
-  }
-  
-//  // Hold Blue led at 100% from about 4am? to about 5am? 271 - 299, 1023.0
-//  if (curr_time > (4.5 * 60) && curr_time < (5 * 60)) {
-//    BlueLevel = MaxBrightPWM;
-//  }
-  
-  // Bring Blue led from 100% (about 4am?) to 0% (about 6am?) 300 - 540, 1023.0 - 0
-  if (curr_time >= (4 * 60) && curr_time <= (6 * 60)) {
-    BlueLevel = ((MaxBrightPWM - 0) / ((4.0 * 60.0) - (6.0 * 60.0))) * (curr_time - (6.0 * 60.0));
-  }
-  
-    // Hold Blue led at 0% between about 6am? and about 8pm? 541 - 1139, 0
-  if (curr_time > (6 * 60) && curr_time < (20 * 60)) {
-    BlueLevel = 0;
-  }
-  
-  // Bring Blue led from 0% (about 8pm?) to 100% (about 10pm?) 1140 - 1260, 0 - 1023.0
-  if (curr_time >= (20 * 60) && curr_time <= (22 * 60)) {
-    BlueLevel = ((MaxBrightPWM - 0) / ((22.0 * 60.0) - (21.0 * 60.0))) * (curr_time - (20.0 * 60.0));
-  }
-  
-  // Hold Blue led at 100% from about 9pm? to about 12am? 1261 - 1440, 1023.0
-  if (curr_time > (22 * 60)) {
-    BlueLevel = MaxBrightPWM;
-  }
-*/
-
-if (curr_time >= (21 * 60) || curr_time <= (5 * 60)) {
-    BlueLevel = MaxBrightPWM * 0.01;
-  }
-
-  return BlueLevel;
+  else {
+    my_led.curr_bright = 0; 
+  }  // if (my_led.peaks > 0)
+  if (prnt)
+  Serial.println("");
 }
 

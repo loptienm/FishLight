@@ -39,6 +39,25 @@ void setup()  {
   readDateDS1307();
   targetnewtime = newtime;
   
+  // Set brightness and on/off times for each LED
+  s_cw_led.on_start[0]  = 8.0 * 60.0;  // 8am * 60 mins
+  s_cw_led.on_time[0]   = 10.0 * 60.0; // 10am * 60 mins
+  s_cw_led.on_bright[0] = 255.0;       // 100%
+  s_cw_led.off_start[0] = 17.0 * 60.0; // 5pm * 60 mins
+  s_cw_led.off_time[0]  = 19.0 * 60.0; // 7pm * 60 mins
+  
+  s_ww_led.on_start[0]  = 5.0 * 60;    // 5am * 60 mins
+  s_ww_led.on_time[0]   = 9.0 * 60;    // 9am * 60 mins
+  s_ww_led.on_bright[0] = 255.0;       // 100%
+  s_ww_led.off_start[0] = 19.0 * 60.0; // 7pm * 60 mins
+  s_ww_led.off_time[0]  = 21.0 * 60.0; // 9pm * 60 mins
+  
+  s_bl_led.on_start[0]  = 20.0 * 60.0; // 8pm * 60 mins
+  s_bl_led.on_time[0]   = 21.0 * 60.0; // 9pm * 60 mins
+  s_bl_led.on_bright[0] = 3.0;         // 1%
+  s_bl_led.off_start[0] = 4.0 * 60.0;  // 4am * 60 mins
+  s_bl_led.off_time[0]  = 5.0 * 60.0;  // 5am * 60 mins
+  
   // State that the board is finished initializing
   lcd.clear();
   lcd.print("Board Starting!");
