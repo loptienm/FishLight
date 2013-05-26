@@ -39,12 +39,12 @@ void getButtonFunction() {
     } else if (setting_time && (lcd_cursor_loc[0] == 12 || lcd_cursor_loc[0] == 14) && lcd_cursor_loc[1] == 1) {  // Clicked yes to save time
       saveTimeButtons();
     } else if (!(setting_time || setting_bright) && lcd_cursor_loc[0] == 7  || lcd_cursor_loc[0] == 8  && lcd_cursor_loc[1] == 1) {  // Set the CW LEDs brightness
-      set_brightness_buttons(CW_LEDS);
+      set_brightness_buttons(s_led.s_cw);
     } else if (!(setting_time || setting_bright) && lcd_cursor_loc[0] == 10 || lcd_cursor_loc[0] == 11 && lcd_cursor_loc[1] == 1) {  // Set the WW LEDs brightness
-      set_brightness_buttons(WW_LEDS);
+      set_brightness_buttons(s_led.s_ww);
     } else if (!(setting_time || setting_bright) && lcd_cursor_loc[0] == 13 || lcd_cursor_loc[0] == 14 && lcd_cursor_loc[1] == 1) {  // Set the BL LEDs brightness
-      set_brightness_buttons(BL_LEDS);
-    } else if (setting_bright && lcd_cursor_loc[0] == 15) {
+      set_brightness_buttons(s_led.s_bl);
+    } else if (setting_bright && lcd_cursor_loc[0] == 15 && lcd_cursor_loc[1] == 1) {  // Save the LED brightness
       //save_brightness_buttons();
     } else {
 //      setting_time = 0;

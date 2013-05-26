@@ -68,9 +68,9 @@ void loop() {
     //Serial.println("After getting max brightness.");
   
     // Get the LED brightness at the current time
-    led_schedule(newtime, s_cw_led);
-    led_schedule(newtime, s_ww_led);
-    led_schedule(newtime, s_bl_led);
+    led_schedule(newtime, s_led.s_cw);
+    led_schedule(newtime, s_led.s_ww);
+    led_schedule(newtime, s_led.s_bl);
     /*lcd.clear();
     lcd.setCursor(0,0);
     lcd.print("After check:");
@@ -79,9 +79,9 @@ void loop() {
     delay(1000);*/
     //Serial.println("After check schedules.");
 
-    analogWrite(CWledPin, s_cw_led.curr_bright);
-    analogWrite(WWledPin, s_ww_led.curr_bright);
-    analogWrite(BLledPin, s_bl_led.curr_bright);
+    analogWrite(CWledPin, s_led.s_cw.curr_bright);
+    analogWrite(WWledPin, s_led.s_ww.curr_bright);
+    analogWrite(BLledPin, s_led.s_bl.curr_bright);
     /*lcd.clear();
     lcd.setCursor(0,0);
     lcd.print("After check:");

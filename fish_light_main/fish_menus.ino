@@ -25,37 +25,36 @@ void get_lcd_menu() {
 |  2  _/  \_/  \_|
  ----------------
 */
-void set_brightness_buttons(int led_string) {
-  //setting_bright = 1;
+void set_brightness_buttons(struct MY_LED my_led) {
+  setting_bright = 1;
   int numPeaks = 0;  // Assume at least one peak (though 0 is valid)
 
-  print_brightness_peaks_lcd(numPeaks);
+  choose_num_brightness_peaks_lcd(numPeaks);
   delay(2000);
-  print_brightness_peaks_lcd(numPeaks + 1);
+  choose_num_brightness_peaks_lcd(numPeaks + 1);
   delay(2000);
-  print_brightness_peaks_lcd(numPeaks + 2);
+  choose_num_brightness_peaks_lcd(numPeaks + 2);
   delay(2000);
 }
-
-void print_brightness_peaks_lcd(int numPeaks) {
+void print_num_peaks_lcd(int numPeaks) {
   lcd.clear();
   if (numPeaks == 0) {
-    lcd.setCursor(0,0); lcd.print("Peaks:          ");
-    lcd.setCursor(0,1); lcd.print("  0  ___________");
+    lcd.setCursor(0,0); lcd.print("                ");
+    lcd.setCursor(0,1); lcd.print("     ___________");
   } else if (numPeaks == 1) {
-    lcd.setCursor(0,0); lcd.print("Peaks: /");
+    lcd.setCursor(0,0); lcd.print("       /");
     lcd.write(byte(1));lcd.write(byte(1));lcd.write(byte(1));
     lcd.write(byte(1));lcd.write(byte(1));
     lcd.write(byte(0));  // '\'
-    lcd.setCursor(0,1); lcd.print("  1  _/       ");
+    lcd.setCursor(0,1); lcd.print("     _/       ");
     lcd.write(byte(0));  // '\'
     lcd.print("_");
   } else if (numPeaks == 2) {
-    lcd.setCursor(0,0); lcd.print("Peaks: /");
+    lcd.setCursor(0,0); lcd.print("       /");
     lcd.write(byte(0));  // '\'
     lcd.print("   /");
     lcd.write(byte(0));  // '\'
-    lcd.setCursor(0,1); lcd.print("  2  _/  ");
+    lcd.setCursor(0,1); lcd.print("     _/  ");
     lcd.write(byte(0));
     lcd.print("_/  ");
     lcd.write(byte(0));
@@ -63,6 +62,16 @@ void print_brightness_peaks_lcd(int numPeaks) {
   } else if (numPeaks < 0 || numPeaks > 2) {
     lcd.print("ERR: Bad # Peaks");
   }
+}
+
+void choose_num_brightness_peaks_lcd(int numPeaks) {
+  print_num_peaks_lcd(numPeaks);
+  lcd.setCursor(0,0);
+  lcd.print("Peaks:");
+  lcd.setCursor(0,1);
+  lcd.print("  ");
+  lcd.print(numPeaks);
+  lcd.print("  ");
 }
 
 void setTimeButtons() {

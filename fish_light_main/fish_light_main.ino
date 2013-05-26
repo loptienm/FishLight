@@ -100,10 +100,17 @@ struct MY_LED {              // Structure of variables that the LEDs could have
   int off_time[2];           // This is the time that each peak should be OFF
   int set;                   // Flag to tell if this LED is being set (# peaks, brightness, etc)
 };
+MY_LED s_cw_leds = {"cw",0,1,0,0,0,0,0,0};  // Init CW LEDs
+MY_LED s_ww_leds = {"ww",0,1,0,0,0,0,0,0};  // init WW LEDs
+MY_LED s_bl_leds = {"bl",0,1,0,0,0,0,0,0};  // Init BL LEDs
 
-MY_LED s_cw_led = {"cw",0,1,0,0,0,0,0,0};
-MY_LED s_ww_led = {"ww",0,1,0,0,0,0,0,0};
-MY_LED s_bl_led = {"bl",0,1,0,0,0,0,0,0};
+struct LED_STRINGS {
+  int set;                                   // Flag to tell if any LED string is being set
+  MY_LED s_cw;  // Create CW LEDs
+  MY_LED s_ww;  // Create WW LEDs
+  MY_LED s_bl;  // Create BL LEDs
+};
+LED_STRINGS s_led = {0, s_cw_leds, s_ww_leds, s_bl_leds};
 //////////////////////////
 
 
@@ -161,9 +168,9 @@ const int num_digs = 10;         // Number of digits allowed when getting a numb
 #define CW_LEDS 1
 #define WW_LEDS 2
 #define BL_LEDS 3
-#define CWBright s_cw_led.curr_bright
-#define WWBright s_ww_led.curr_bright
-#define BLBright s_bl_led.curr_bright
+#define CWBright s_led.s_cw.curr_bright
+#define WWBright s_led.s_ww.curr_bright
+#define BLBright s_led.s_bl.curr_bright
 
 //////////////////////////
 
