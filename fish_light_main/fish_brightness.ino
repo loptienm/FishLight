@@ -74,14 +74,23 @@ void change_max_bright(int location, int up_downb) {
   lcd.setCursor(lcd_cursor_loc[0],lcd_cursor_loc[1]);
 }
 
-int last_prnt = 0;
+int last_prnt_cw = 0;
+int last_prnt_ww = 0;
+int last_prnt_bl = 0;
 void led_schedule(int curr_time, struct MY_LED my_led) {
   int prnt = 0;
-  if (curr_time % 10 == 0 && last_prnt != curr_time) {
+  if (my_led.name == "cw" && curr_time % 10 == 0 && last_prnt_cw != curr_time) {
     prnt = 1;
-    last_prnt = curr_time;
-  } else 
-    prnt = 0;
+    last_prnt_cw = curr_time;
+  }
+  if (my_led.name == "ww" && curr_time % 10 == 0 && last_prnt_ww != curr_time) {
+    prnt = 1;
+    last_prnt_ww = curr_time;
+  }
+  if (my_led.name == "bl" && curr_time % 10 == 0 && last_prnt_bl != curr_time) {
+    prnt = 1;
+    last_prnt_bl = curr_time;
+  }
   
   if (prnt) {
   Serial.print(curr_time);
@@ -98,25 +107,26 @@ void led_schedule(int curr_time, struct MY_LED my_led) {
       else if (curr_time >= my_led.off_start[i] && curr_time <= my_led.off_time[i]) {  // Ramping down
         my_led.curr_bright = ((my_led.on_bright[i] - 0.0) / (my_led.off_start[i] - my_led.off_time[i])) * (curr_time - my_led.off_time[i]);
       }
-      else if (curr_time > my_led.on_time[i] && curr_time < my_led.off_start[i]) {  // Peak on
-        my_led.curr_bright = my_led.on_bright[i];
-      }
-      else if (my_led.name == "bl") {
-        if (curr_time > my_led.on_time[i] || curr_time < my_led.off_start[i]) {
+      else if (my_led.on_time[i] > my_led.off_start[i]) {  // If the peak wraps from before to after midnight, account for the weirdness
+        if (curr_time > my_led.on_time[i] || curr_time < my_led.off_start[i]) {  // Peak on
+          my_led.curr_bright = my_led.on_bright[i];
+        }
+        else if (curr_time > my_led.on_time[i] && curr_time < my_led.off_start[i]) {  // Peak on
           my_led.curr_bright = my_led.on_bright[i];
         }
       }
       else {
         my_led.curr_bright = 0;
       }
-      if (prnt)
-      Serial.print(my_led.curr_bright);
     }  // for (int i = 0; i < my_led.peaks; i++)
   }
   else {
     my_led.curr_bright = 0; 
   }  // if (my_led.peaks > 0)
-  if (prnt)
-  Serial.println("");
+  if (prnt) {
+    Serial.print(my_led.curr_bright);
+    if (my_led.name == "bl") Serial.println("");
+    else Serial.print(", ");
+  }
 }
 
